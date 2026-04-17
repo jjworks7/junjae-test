@@ -1,14 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ladder Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <h1>Ladder Game</h1>
+    <div class="container">
+        <div class="controls">
+            <div class="players">
+                <h2>Players</h2>
+                <input type="text" id="player1" placeholder="Player 1">
+                <input type="text" id="player2" placeholder="Player 2">
+                <input type="text" id="player3" placeholder="Player 3">
+                <input type="text" id="player4" placeholder="Player 4">
+                <input type="text" id="player5" placeholder="Player 5">
+            </div>
+            <div class="outcomes">
+                <h2>Outcomes</h2>
+                <input type="text" id="outcome1" placeholder="Outcome 1">
+                <input type="text" id="outcome2" placeholder="Outcome 2">
+                <input type="text" id="outcome3" placeholder="Outcome 3">
+                <input type="text" id="outcome4" placeholder="Outcome 4">
+                <input type="text" id="outcome5" placeholder="Outcome 5">
+            </div>
+            <div class="buttons">
+                <button id="startButton">Start</button>
+                <button id="resetButton">Reset</button>
+            </div>
+        </div>
+        <div class="game-container">
+            <canvas id="ladderCanvas" width="600" height="400"></canvas>
+        </div>
+    </div>
+    <script src="main.js"></script>
 </body>
 </html>
