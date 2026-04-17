@@ -53,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const x = spacing * (i + 1);
             ctx.beginPath();
             ctx.moveTo(x, 50); // Adjusted for emoji
-            ctx.lineTo(x, canvas.height - 40);
+            ctx.lineTo(x, canvas.height - 100);
             ctx.stroke();
 
             ctx.fillStyle = textCol;
             ctx.font = '24px serif'; // Larger font for emojis
             ctx.fillText(players[i], x, 35);
             ctx.font = '14px Arial'; // Revert font for outcomes
-            ctx.fillText(outcomes[i], x, canvas.height - 15);
+            ctx.fillText(outcomes[i], x, canvas.height - 70);
         }
 
         // Draw rungs
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.moveTo(startX, y);
 
         const path = (timestamp) => {
-            if (y >= canvas.height - 40) {
+            if (y >= canvas.height - 100) {
                 ctx.stroke();
                 results[playerIndex] = currentLine;
                 if(results.filter(r => r !== undefined).length === numPlayers) {
@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 const endX = spacing * (currentLine + 1);
-                ctx.lineTo(endX, canvas.height - 40);
-                y = canvas.height - 40;
+                ctx.lineTo(endX, canvas.height - 100);
+                y = canvas.height - 100;
             }
 
             ctx.stroke();
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ctx.fillStyle = colors[i];
             const resultText = `${players[i]} -> ${outcomes[finalPosition]}`;
-            ctx.fillText(resultText, startX , canvas.height - 15);
+            ctx.fillText(resultText, startX , canvas.height - 30);
         }
          isAnimating = false;
          startButton.disabled = false;
