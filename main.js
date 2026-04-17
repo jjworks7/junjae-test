@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerInputs = Array.from({ length: numPlayers }, (_, i) => document.getElementById(`player${i + 1}`));
     const outcomeInputs = Array.from({ length: numPlayers }, (_, i) => document.getElementById(`outcome${i + 1}`));
 
-    let players = playerInputs.map(input => input.placeholder);
+    const fruitEmojis = ['🍎', '🥕', '🍊', '🍇', '🍌'];
+    let players = playerInputs.map((input, i) => input.value || fruitEmojis[i]);
     let outcomes = outcomeInputs.map(input => input.placeholder);
     let ladder = [];
     let results = [];
@@ -51,12 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < numPlayers; i++) {
             const x = spacing * (i + 1);
             ctx.beginPath();
-            ctx.moveTo(x, 40);
+            ctx.moveTo(x, 50); // Adjusted for emoji
             ctx.lineTo(x, canvas.height - 40);
             ctx.stroke();
 
             ctx.fillStyle = textCol;
-            ctx.fillText(players[i], x, 30);
+            ctx.font = '24px serif'; // Larger font for emojis
+            ctx.fillText(players[i], x, 35);
+            ctx.font = '14px Arial'; // Revert font for outcomes
             ctx.fillText(outcomes[i], x, canvas.height - 15);
         }
 
@@ -93,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateNames() {
-        players = playerInputs.map((input, i) => input.value || input.placeholder);
+        players = playerInputs.map((input, i) => input.value || fruitEmojis[i]);
         outcomes = outcomeInputs.map((input, i) => input.value || input.placeholder);
         drawLadder();
     }
@@ -101,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function tracePath(playerIndex) {
         const spacing = canvas.width / (numPlayers + 1);
         let currentLine = playerIndex;
-        let y = 40;
+        let y = 50;
 
         ctx.beginPath();
         ctx.strokeStyle = colors[playerIndex];
@@ -184,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startButton.disabled = false;
         playerInputs.forEach(input => input.value = '');
         outcomeInputs.forEach(input => input.value = '');
-        players = playerInputs.map(input => input.placeholder);
+        players = playerInputs.map((input, i) => fruitEmojis[i]);
         outcomes = outcomeInputs.map(input => input.placeholder);
         ladder = [];
         drawLadder();
