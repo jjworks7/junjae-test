@@ -23,8 +23,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const outcomeInputs = Array.from({ length: numPlayers }, (_, i) => document.getElementById(`outcome${i + 1}`));
 
     const fruitEmojis = ['🍎', '🥕', '🍊', '🍇', '🍌'];
+    const defaultOutcomeImages = [
+        'https://i.namu.wiki/i/Y81oBcVxbKdDKw9ymTHGqnVSntRMAHiOP5iwbDt1sbiu-02abkkMxv6JkeItlHAG62RdBsHxsLN3gkjFGoRftCPu9CzNgvf5FdiQkv7lxx4852uhE-0MTJU_B9WkhEfSIIki18plBnajOchvsX1Tcg.webp',
+        'https://i.namu.wiki/i/qEbWSBklqYN8Cx0VlUaLrggEfJlIBfGSwaReTkT1wDqtEW5Q2fYnGSjfykL6l4g7K3JwzSBNLCvNL_2z2d6PDuuY8uwAAJ_78rzF7gnh1e9N1zZZnGff9BGnNcNcAfy0wedcWmNTpUVoITm04okejQ.webp',
+        'https://i.namu.wiki/i/bDbMG09AythoxSw3QnEyDgQhMRJSUFO47Zmixq20h0wBSDm6KVYtrkRMIjNcNZCafaEBh0HQcjE0q3TE_6l7DG6jgtVPiCnFkEWMuJqa_ox7jVCdYc1zGyUsHJDHOTMoSgY7ehIv2c29oqmkENZH1w.webp',
+        'https://i.namu.wiki/i/yKlsfScf1sj2bBiIkMAhI82VzJi-_lgu0lthojF6IuhsrglfqoQLS6DWKEHDoGnrYxOAKDMwRhm4Nn2j5hrYk-OtQaZBPpMaf-7GgRghPH6MyYRQMTe8PPc48FbQz2BoKQDfbt_YeOI7RaC7SClzPQ.webp',
+        'https://i.namu.wiki/i/A51UzN25a1R1lo7awjmB4ZOZcMpYXvO8B3odZdvzHSD-o69uYq3nxUFw2ZyHreISRfryVKJjgYBcq2setEbIpdUe4uK9zeaS-c8dYc1oKjGwxZcJTFmCKpnm5n-EQJimAVQFkWH8FLmxxFqGef91nQ.webp'
+    ];
+
     let players = playerInputs.map((input, i) => input.value || fruitEmojis[i]);
-    let outcomes = outcomeInputs.map(input => input.placeholder);
+    let outcomes = outcomeInputs.map((input, i) => input.value || defaultOutcomeImages[i]);
+    let outcomeImages = [];
+
+    function preloadImages() {
+        outcomeImages = outcomes.map(url => {
+            const img = new Image();
+            img.src = url;
+            img.onload = () => drawLadder();
+            return img;
+        });
+    }
+    preloadImages();
+
     let ladder = [];
     let results = [];
     let isAnimating = false;
@@ -53,14 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const x = spacing * (i + 1);
             ctx.beginPath();
             ctx.moveTo(x, 50); // Adjusted for emoji
-            ctx.lineTo(x, canvas.height - 100);
+            ctx.lineTo(x, canvas.height - 120); // End before image
             ctx.stroke();
 
             ctx.fillStyle = textCol;
             ctx.font = '24px serif'; // Larger font for emojis
             ctx.fillText(players[i], x, 35);
-            ctx.font = '14px Arial'; // Revert font for outcomes
-            ctx.fillText(outcomes[i], x, canvas.height - 70);
+            
+            // Draw outcome image
+            const imgSize = 40;
+            const img = outcomeImages[i];
+            if (img && img.complete) {
+                ctx.drawImage(img, x - imgSize / 2, canvas.height - 110, imgSize, imgSize);
+            } else {
+                ctx.font = '10px Arial';
+                ctx.fillText('Loading...', x, canvas.height - 90);
+            }
         }
 
         // Draw rungs
@@ -97,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateNames() {
         players = playerInputs.map((input, i) => input.value || fruitEmojis[i]);
-        outcomes = outcomeInputs.map((input, i) => input.value || input.placeholder);
-        drawLadder();
+        outcomes = outcomeInputs.map((input, i) => input.value || defaultOutcomeImages[i]);
+        preloadImages();
     }
 
     function tracePath(playerIndex) {
@@ -113,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.moveTo(startX, y);
 
         const path = (timestamp) => {
-            if (y >= canvas.height - 100) {
+            if (y >= canvas.height - 120) {
                 ctx.stroke();
                 results[playerIndex] = currentLine;
                 if(results.filter(r => r !== undefined).length === numPlayers) {
@@ -137,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 const endX = spacing * (currentLine + 1);
-                ctx.lineTo(endX, canvas.height - 100);
-                y = canvas.height - 100;
+                ctx.lineTo(endX, canvas.height - 120);
+                y = canvas.height - 120;
             }
 
             ctx.stroke();
@@ -153,14 +181,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function displayResults() {
         ctx.font = 'bold 16px Arial';
+        const imgSize = 30;
         for (let i = 0; i < numPlayers; i++) {
             const finalPosition = results.indexOf(i);
             const startX = canvas.width / (numPlayers + 1) * (i + 1);
-            const endX = canvas.width / (numPlayers + 1) * (finalPosition + 1);
-
+            
             ctx.fillStyle = colors[i];
-            const resultText = `${players[i]} -> ${outcomes[finalPosition]}`;
-            ctx.fillText(resultText, startX , canvas.height - 30);
+            ctx.font = '20px serif';
+            ctx.fillText(players[i], startX - 30, canvas.height - 30);
+            ctx.font = '16px Arial';
+            ctx.fillText('->', startX, canvas.height - 30);
+            
+            const resultImg = outcomeImages[finalPosition];
+            if (resultImg && resultImg.complete) {
+                ctx.drawImage(resultImg, startX + 10, canvas.height - 50, imgSize, imgSize);
+            }
         }
          isAnimating = false;
          startButton.disabled = false;
@@ -188,7 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playerInputs.forEach(input => input.value = '');
         outcomeInputs.forEach(input => input.value = '');
         players = playerInputs.map((input, i) => fruitEmojis[i]);
-        outcomes = outcomeInputs.map(input => input.placeholder);
+        outcomes = outcomeInputs.map((input, i) => defaultOutcomeImages[i]);
+        preloadImages();
         ladder = [];
         drawLadder();
     }
