@@ -1,11 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('ladderCanvas');
-    const ctx = canvas.getContext('2d');
+    // --- Tab Logic ---
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-    const startButton = document.getElementById('startButton');
-    const resetButton = document.getElementById('resetButton');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.id === 'themeToggle') return; // Skip theme toggle
+            
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // --- Theme Logic ---
     const themeToggle = document.getElementById('themeToggle');
-
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -17,6 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         drawLadder();
     });
+
+    // --- Ladder Game Logic ---
+    const canvas = document.getElementById('ladderCanvas');
+    const ctx = canvas.getContext('2d');
+    const startButton = document.getElementById('startButton');
+    const resetButton = document.getElementById('resetButton');
 
     const numPlayers = 5;
     const playerInputs = Array.from({ length: numPlayers }, (_, i) => document.getElementById(`player${i + 1}`));
@@ -68,19 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const spacing = canvas.width / (numPlayers + 1);
 
-        // Draw vertical lines and text
         for (let i = 0; i < numPlayers; i++) {
             const x = spacing * (i + 1);
             ctx.beginPath();
-            ctx.moveTo(x, 50); // Adjusted for emoji
-            ctx.lineTo(x, canvas.height - 120); // End before image
+            ctx.moveTo(x, 50);
+            ctx.lineTo(x, canvas.height - 120);
             ctx.stroke();
 
             ctx.fillStyle = textCol;
-            ctx.font = '24px serif'; // Larger font for emojis
+            ctx.font = '24px serif';
             ctx.fillText(players[i], x, 35);
             
-            // Draw outcome image
             const imgSize = 40;
             const img = outcomeImages[i];
             if (img && img.complete) {
@@ -91,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Draw rungs
         ctx.strokeStyle = rungCol;
         ladder.forEach(rung => {
             const x1 = spacing * (rung.start + 1);
@@ -106,16 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateLadder() {
         ladder = [];
         const spacing = canvas.width / (numPlayers + 1);
-        const numRungs = 15; // Adjust for more or fewer rungs
+        const numRungs = 15;
         const ladderHeight = canvas.height - 80;
 
         for (let i = 0; i < numRungs; i++) {
             const y = Math.floor(Math.random() * (ladderHeight - 40)) + 60;
             const start = Math.floor(Math.random() * (numPlayers - 1));
-
-            // Ensure no overlapping rungs
             const isOverlapping = ladder.some(r => Math.abs(r.y - y) < rungHeight && (r.start === start || r.end === start));
-
             if (!isOverlapping) {
                 ladder.push({ start: start, end: start + 1, y: y });
             }
@@ -201,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
          startButton.disabled = false;
     }
 
-
     function startGame() {
         if (isAnimating) return;
         isAnimating = true;
@@ -234,6 +244,41 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', startGame);
     resetButton.addEventListener('click', resetGame);
 
-    // Initial draw
     drawLadder();
+
+    // --- Coin Flip Game Logic ---
+    const flipCoinButton = document.getElementById('flipButton');
+    const coin = document.getElementById('coin');
+    const coinResult = document.getElementById('coinResult');
+    let isCoinFlipping = false;
+    let currentRotation = 0;
+
+    flipCoinButton.addEventListener('click', () => {
+        if (isCoinFlipping) return;
+        isCoinFlipping = true;
+        coinResult.textContent = '';
+        flipCoinButton.disabled = true;
+        
+        // Determine result: 0 is front (이순신), 1 is back (숫자 100)
+        const isBack = Math.random() > 0.5;
+        
+        // Calculate spins (at least 5 full spins + extra based on result)
+        const spins = 5 * 360; 
+        const extraRotation = isBack ? 180 : 0;
+        
+        // To make it continuously rotate in the same direction, add to current rotation
+        // Normalize current rotation so we don't get huge numbers, but keep it smooth
+        const normalizedCurrent = currentRotation % 360; 
+        const baseTarget = currentRotation - normalizedCurrent + spins;
+        
+        currentRotation = baseTarget + extraRotation;
+        
+        coin.style.transform = `rotateY(${currentRotation}deg)`;
+        
+        setTimeout(() => {
+            isCoinFlipping = false;
+            flipCoinButton.disabled = false;
+            coinResult.textContent = isBack ? '결과: 100 (뒷면)' : '결과: 이순신 (앞면)';
+        }, 3000); // matches CSS transition time
+    });
 });

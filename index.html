@@ -3,39 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladder Game</title>
+    <title>Mini Games</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Ladder Game</h1>
-    <div class="container">
-        <div class="controls">
-            <div class="players">
-                <h2>Players</h2>
-                <input type="text" id="player1" placeholder="Player 1">
-                <input type="text" id="player2" placeholder="Player 2">
-                <input type="text" id="player3" placeholder="Player 3">
-                <input type="text" id="player4" placeholder="Player 4">
-                <input type="text" id="player5" placeholder="Player 5">
+    <div class="header">
+        <h1>Mini Games</h1>
+        <button id="themeToggle">Toggle Theme</button>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab-button active" data-tab="ladderTab">Ladder Game</button>
+        <button class="tab-button" data-tab="coinTab">Coin Flip</button>
+    </div>
+
+    <div id="ladderTab" class="tab-content active">
+        <div class="container">
+            <div class="controls">
+                <div class="players">
+                    <h2>Players</h2>
+                    <input type="text" id="player1" placeholder="Player 1">
+                    <input type="text" id="player2" placeholder="Player 2">
+                    <input type="text" id="player3" placeholder="Player 3">
+                    <input type="text" id="player4" placeholder="Player 4">
+                    <input type="text" id="player5" placeholder="Player 5">
+                </div>
+                <div class="outcomes">
+                    <h2>Outcomes</h2>
+                    <input type="text" id="outcome1" placeholder="Outcome 1">
+                    <input type="text" id="outcome2" placeholder="Outcome 2">
+                    <input type="text" id="outcome3" placeholder="Outcome 3">
+                    <input type="text" id="outcome4" placeholder="Outcome 4">
+                    <input type="text" id="outcome5" placeholder="Outcome 5">
+                </div>
+                <div class="buttons">
+                    <button id="startButton">Start</button>
+                    <button id="resetButton">Reset</button>
+                </div>
             </div>
-            <div class="outcomes">
-                <h2>Outcomes</h2>
-                <input type="text" id="outcome1" placeholder="Outcome 1">
-                <input type="text" id="outcome2" placeholder="Outcome 2">
-                <input type="text" id="outcome3" placeholder="Outcome 3">
-                <input type="text" id="outcome4" placeholder="Outcome 4">
-                <input type="text" id="outcome5" placeholder="Outcome 5">
+            <div class="game-container">
+                <canvas id="ladderCanvas" width="600" height="500"></canvas>
             </div>
-            <div class="buttons">
-                <button id="startButton">Start</button>
-                <button id="resetButton">Reset</button>
-                <button id="themeToggle">Toggle Theme</button>
-            </div>
-        </div>
-        <div class="game-container">
-            <canvas id="ladderCanvas" width="600" height="500"></canvas>
         </div>
     </div>
+
+    <div id="coinTab" class="tab-content">
+        <div class="container coin-container">
+            <div class="coin-wrapper">
+                <div id="coin" class="coin">
+                    <div class="coin-face coin-front"></div>
+                    <div class="coin-face coin-back"></div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="flipButton">Flip Coin</button>
+            </div>
+            <p id="coinResult" class="coin-result"></p>
+        </div>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>
