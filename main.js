@@ -4,6 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const startButton = document.getElementById('startButton');
     const resetButton = document.getElementById('resetButton');
+    const themeToggle = document.getElementById('themeToggle');
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        drawLadder();
+    });
 
     const numPlayers = 5;
     const playerInputs = Array.from({ length: numPlayers }, (_, i) => document.getElementById(`player${i + 1}`));
@@ -21,8 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawLadder() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const isDark = document.body.classList.contains('dark-mode');
+        const lineCol = isDark ? '#f0f0f0' : '#333';
+        const rungCol = isDark ? '#aaa' : '#555';
+        const textCol = isDark ? '#f0f0f0' : '#333';
+
         ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = '#333';
+        ctx.strokeStyle = lineCol;
         ctx.font = '14px Arial';
         ctx.textAlign = 'center';
 
@@ -36,13 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineTo(x, canvas.height - 40);
             ctx.stroke();
 
-            ctx.fillStyle = '#333';
+            ctx.fillStyle = textCol;
             ctx.fillText(players[i], x, 30);
             ctx.fillText(outcomes[i], x, canvas.height - 15);
         }
 
         // Draw rungs
-        ctx.strokeStyle = '#555';
+        ctx.strokeStyle = rungCol;
         ladder.forEach(rung => {
             const x1 = spacing * (rung.start + 1);
             const x2 = spacing * (rung.end + 1);

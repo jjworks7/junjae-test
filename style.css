@@ -1,16 +1,37 @@
+:root {
+    --bg-color: yellow;
+    --text-color: #333;
+    --container-bg: white;
+    --border-color: #ccc;
+    --shadow-color: rgba(0,0,0,0.1);
+    --input-shadow: rgba(0,0,0,0.05);
+    --line-color: #eee;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --container-bg: #2d2d2d;
+    --border-color: #444;
+    --shadow-color: rgba(0,0,0,0.5);
+    --input-shadow: rgba(0,0,0,0.2);
+    --line-color: #444;
+}
+
 body {
     font-family: sans-serif;
-    background-color: yellow;
-    color: #333;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 h1 {
-    color: #333;
-    text-shadow: 1px 1px 2px #ccc;
+    color: var(--text-color);
+    text-shadow: 1px 1px 2px var(--shadow-color);
 }
 
 .container {
@@ -25,10 +46,11 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background-color: white;
+    background-color: var(--container-bg);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .players, .outcomes {
@@ -38,23 +60,28 @@ h1 {
 
 h2 {
     margin-top: 0;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid var(--line-color);
     padding-bottom: 10px;
     margin-bottom: 10px;
+    color: var(--text-color);
 }
 
 input[type="text"] {
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     margin-bottom: 10px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 3px var(--input-shadow);
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .buttons {
     display: flex;
     justify-content: space-around;
     padding-top: 10px;
+    gap: 10px;
 }
 
 button {
@@ -64,7 +91,7 @@ button {
     background-color: #4CAF50;
     color: white;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px var(--shadow-color);
     transition: background-color 0.3s, transform 0.1s;
 }
 
@@ -74,7 +101,7 @@ button:hover {
 
 button:active {
     transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 2px var(--shadow-color);
 }
 
 #resetButton {
@@ -85,10 +112,19 @@ button:active {
     background-color: #e53935;
 }
 
+#themeToggle {
+    background-color: #2196F3;
+}
+
+#themeToggle:hover {
+    background-color: #0b7dda;
+}
+
 .game-container {
-    background-color: white;
+    background-color: var(--container-bg);
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 #ladderCanvas {
